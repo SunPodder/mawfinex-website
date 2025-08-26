@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useCallback } from "react"
-import { motion } from "framer-motion"
 import { useRouter } from "next/router"
 import {
     Video,
@@ -481,15 +480,9 @@ const CoreServices = ({ inView }) => {
         const currentCategory = serviceCategories[activeCategory]
 
         return (
-            <motion.div
+            <div
                 key={index}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                    duration: 0.5,
-                    delay: index * 0.1,
-                }}
-                className="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 hover:border-neon-cyan/30 transition-all duration-300 group hover:transform hover:scale-105"
+                className="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 hover:border-neon-cyan/30 transition-all duration-300 group hover:scale-105"
             >
                 <div
                     className={`w-16 h-16 bg-${categoryColor}/20 rounded-xl flex items-center justify-center mb-4 group-hover:bg-${categoryColor}/30 transition-colors`}
@@ -530,43 +523,36 @@ const CoreServices = ({ inView }) => {
                     </div>
 
                     {service.price === "Contact for Price" ? (
-                        <motion.button
+                        <button
                             onClick={() => handleContactRedirect(service)}
-                            className="flex items-center gap-2 text-neon-cyan hover:text-neon-green transition-colors"
-                            whileHover={{ x: 5 }}
+                            className="flex items-center gap-2 text-neon-cyan hover:text-neon-green transition-colors hover:translate-x-1"
                         >
                             <Phone className="w-4 h-4" />
                             <span className="text-sm">Contact</span>
-                        </motion.button>
+                        </button>
                     ) : (
-                        <motion.button
+                        <button
                             onClick={() => handleServiceConsultation(service, currentCategory.title)}
-                            className="flex items-center gap-2 text-neon-cyan hover:text-neon-green transition-colors"
-                            whileHover={{ x: 5 }}
+                            className="flex items-center gap-2 text-neon-cyan hover:text-neon-green transition-colors hover:translate-x-1"
                         >
                             <span className="text-sm">Get Quote</span>
                             <ArrowRight className="w-4 h-4" />
-                        </motion.button>
+                        </button>
                     )}
                 </div>
-            </motion.div>
+            </div>
         )
     }
 
     return (
         <div className="relative mb-16">
-            {/* Background Elements */}
-            <div className="absolute top-1/4 left-0 w-96 h-96 bg-neon-cyan/5 rounded-full blur-3xl" />
-            <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-neon-green/5 rounded-full blur-3xl" />
+            {/* Simplified background elements - reduced blur */}
+            <div className="absolute top-1/4 left-0 w-96 h-96 bg-neon-cyan/3 rounded-full" />
+            <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-neon-green/3 rounded-full" />
 
             <div className="relative z-10">
-                {/* Section Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={inView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6 }}
-                    className="text-center mb-16"
-                >
+                {/* Section Header - no motion */}
+                <div className="text-center mb-16">
                     <h2 className="text-4xl md:text-6xl font-bold mb-6">
                         Our <span className="gradient-text">Services</span>
                     </h2>
@@ -574,15 +560,10 @@ const CoreServices = ({ inView }) => {
                     <p className="text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed">
                         Comprehensive digital solutions tailored to transform your business and amplify your digital presence across all platforms.
                     </p>
-                </motion.div>
+                </div>
 
-                {/* Category Tabs */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={inView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6, delay: 0.2 }}
-                    className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-12 px-4"
-                >
+                {/* Category Tabs - simplified */}
+                <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-12 px-4">
                     {serviceCategories.map((category, index) => {
                         const Icon = category.icon
                         return (
@@ -593,7 +574,7 @@ const CoreServices = ({ inView }) => {
                                     activeCategory === index
                                         ? `bg-${category.color}/20 border-${category.color} text-${category.color}`
                                         : "bg-white/5 border-white/20 text-white hover:border-white/40"
-                                } border backdrop-blur-sm`}
+                                } border backdrop-blur-sm hover:scale-105`}
                             >
                                 <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
                                 <span className="hidden sm:inline">
@@ -605,28 +586,20 @@ const CoreServices = ({ inView }) => {
                             </button>
                         )
                     })}
-                </motion.div>
+                </div>
 
-                {/* Services Grid */}
-                <motion.div
+                {/* Services Grid - no complex animations */}
+                <div
                     key={activeCategory}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
                     className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
                 >
                     {serviceCategories[activeCategory].services.map((service, index) =>
                         renderServiceCard(service, index, serviceCategories[activeCategory].color)
                     )}
-                </motion.div>
+                </div>
 
-                {/* Services Section CTA */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={inView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6, delay: 0.8 }}
-                    className="text-center mt-20"
-                >
+                {/* Services Section CTA - simplified */}
+                <div className="text-center mt-20">
                     <div className="bg-gradient-to-r from-neon-cyan/10 to-neon-green/10 backdrop-blur-sm p-6 sm:p-10 rounded-3xl border border-white/10">
                         <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6">
                             Need a <span className="text-neon-cyan">Custom Solution</span>?
@@ -635,25 +608,21 @@ const CoreServices = ({ inView }) => {
                             Our digital services are designed to scale with your business. Get personalized solutions tailored to your specific needs.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <motion.a
+                            <a
                                 href="/consultation"
-                                className="btn-primary text-lg px-8 py-4"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
+                                className="btn-primary text-lg px-8 py-4 hover:scale-105 transition-transform duration-300"
                             >
                                 Free Consultation
-                            </motion.a>
-                            <motion.a
+                            </a>
+                            <a
                                 href="/contact"
-                                className="btn-secondary text-lg px-8 py-4"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
+                                className="btn-secondary text-lg px-8 py-4 hover:scale-105 transition-transform duration-300"
                             >
                                 Get Custom Quote
-                            </motion.a>
+                            </a>
                         </div>
                     </div>
-                </motion.div>
+                </div>
             </div>
         </div>
     )

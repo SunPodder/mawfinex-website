@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useCallback, useEffect } from "react"
-import { motion } from "framer-motion"
 import { useRouter } from "next/router"
 import {
     TrendingUp,
@@ -236,18 +235,13 @@ const Business = ({ inView }) => {
 
     return (
         <div className="relative mb-16">
-            {/* Background Elements */}
-            <div className="absolute top-0 left-1/4 w-96 h-96 bg-neon-green/5 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-neon-cyan/5 rounded-full blur-3xl" />
+            {/* Simplified background elements - removed heavy blur effects */}
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-neon-green/3 rounded-full" />
+            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-neon-cyan/3 rounded-full" />
 
             <div className="relative z-10">
-                {/* Section Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={inView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6, delay: 1.0 }}
-                    className="text-center mb-16"
-                >
+                {/* Section Header - no motion */}
+                <div className="text-center mb-16">
                     <h2 className="text-4xl md:text-6xl font-bold mb-6">
                         Business Growth{" "}
                         <span className="gradient-text">Packages</span>
@@ -257,27 +251,16 @@ const Business = ({ inView }) => {
                         Comprehensive growth solutions designed to transform your business from startup to market leader. 
                         Each package includes guaranteed results and strategic consultation.
                     </p>
-                </motion.div>
+                </div>
 
-                {/* Growth Features */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={inView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6, delay: 1.2 }}
-                    className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
-                >
+                {/* Growth Features - simplified animations */}
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
                     {automationFeatures.map((feature, index) => {
                         const Icon = feature.icon
                         return (
-                            <motion.div
+                            <div
                                 key={index}
-                                initial={{ opacity: 0, y: 30 }}
-                                animate={inView ? { opacity: 1, y: 0 } : {}}
-                                transition={{
-                                    duration: 0.6,
-                                    delay: 1.4 + index * 0.1,
-                                }}
-                                className="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 hover:border-neon-cyan/30 transition-all duration-300 text-center group hover:transform hover:scale-105"
+                                className="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10 hover:border-neon-cyan/30 transition-colors duration-300 text-center group"
                             >
                                 <div className="w-16 h-16 bg-neon-cyan/20 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:bg-neon-cyan/30 transition-colors">
                                     <Icon className="w-8 h-8 text-neon-cyan" />
@@ -288,18 +271,13 @@ const Business = ({ inView }) => {
                                 <p className="text-gray-400 text-sm leading-relaxed">
                                     {feature.description}
                                 </p>
-                            </motion.div>
+                            </div>
                         )
                     })}
-                </motion.div>
+                </div>
 
-                {/* Growth Packages */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={inView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6, delay: 1.6 }}
-                    className="mb-16"
-                >
+                {/* Growth Packages - no motion */}
+                <div className="mb-16">
                     <h3 className="text-3xl font-bold text-center mb-12">
                         Choose Your{" "}
                         <span className="gradient-text">Growth Journey</span>
@@ -307,15 +285,9 @@ const Business = ({ inView }) => {
 
                     <div className="grid lg:grid-cols-2 gap-8">
                         {packages.map((pkg, index) => (
-                            <motion.div
+                            <div
                                 key={index}
-                                initial={{ opacity: 0, y: 30 }}
-                                animate={inView ? { opacity: 1, y: 0 } : {}}
-                                transition={{
-                                    duration: 0.6,
-                                    delay: 1.8 + index * 0.1,
-                                }}
-                                className={`relative bg-white/5 backdrop-blur-sm p-8 rounded-2xl border transition-all duration-300 hover:transform hover:scale-105 flex flex-col ${
+                                className={`relative bg-white/5 backdrop-blur-sm p-8 rounded-2xl border transition-all duration-300 hover:scale-105 flex flex-col ${
                                     pkg.popular
                                         ? "border-neon-green shadow-lg shadow-neon-green/20"
                                         : "border-white/10 hover:border-neon-cyan/30"
@@ -379,36 +351,29 @@ const Business = ({ inView }) => {
                                     </div>
                                 </div>
 
-                                <motion.button
+                                <button
                                     onClick={() => {
                                         console.log("Button clicked for package:", pkg.name)
                                         handleApply(pkg)
                                     }}
-                                    className={`w-full py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 mt-auto ${
+                                    className={`w-full py-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 mt-auto hover:scale-105 ${
                                         pkg.popular
                                             ? "bg-gradient-to-r from-neon-green to-neon-cyan text-black hover:shadow-lg hover:shadow-neon-green/30"
                                             : pkg.price === "Contact for Price"
                                             ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:shadow-lg hover:shadow-purple-500/30"
                                             : "bg-white/10 text-white hover:bg-neon-cyan/20 hover:text-neon-cyan border border-white/20 hover:border-neon-cyan"
                                     }`}
-                                    whileHover={{ scale: 1.02 }}
-                                    whileTap={{ scale: 0.98 }}
                                 >
                                     <Zap className="w-5 h-5" />
                                     {pkg.price === "Contact for Price" ? "Get Custom Quote" : "Start Growth Journey"}
-                                </motion.button>
-                            </motion.div>
+                                </button>
+                            </div>
                         ))}
                     </div>
-                </motion.div>
+                </div>
 
-                {/* Success Guarantee Section */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={inView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6, delay: 2.2 }}
-                    className="mb-16"
-                >
+                {/* Success Guarantee Section - no motion */}
+                <div className="mb-16">
                     <div className="grid md:grid-cols-3 gap-6">
                         <div className="bg-gradient-to-r from-neon-green/10 to-transparent p-6 rounded-2xl border border-neon-green/20">
                             <ShieldCheck className="w-12 h-12 text-neon-green mb-4" />
@@ -428,15 +393,10 @@ const Business = ({ inView }) => {
                             <p className="text-gray-400 text-sm">Comprehensive analytics and monthly reports to track your business growth progress.</p>
                         </div>
                     </div>
-                </motion.div>
+                </div>
 
-                {/* Business Growth CTA */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={inView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6, delay: 2.4 }}
-                    className="text-center"
-                >
+                {/* Business Growth CTA - simplified */}
+                <div className="text-center">
                     <div className="bg-gradient-to-r from-neon-green/10 to-neon-cyan/10 backdrop-blur-sm p-8 rounded-2xl border border-white/10">
                         <TrendingUp className="w-16 h-16 text-neon-cyan mx-auto mb-4" />
                         <h3 className="text-2xl md:text-3xl font-bold mb-4">
@@ -451,26 +411,22 @@ const Business = ({ inView }) => {
                             Start your transformation journey today with guaranteed results!
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <motion.button
+                            <button
                                 onClick={() => handleConsultationRedirect("growth-consultation")}
-                                className="btn-primary flex items-center justify-center gap-2"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
+                                className="btn-primary flex items-center justify-center gap-2 hover:scale-105 transition-transform duration-300"
                             >
                                 Schedule Growth Consultation
                                 <ArrowRight className="w-5 h-5" />
-                            </motion.button>
-                            <motion.button
+                            </button>
+                            <button
                                 onClick={() => handleConsultationRedirect("custom-package")}
-                                className="btn-secondary flex items-center justify-center gap-2"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
+                                className="btn-secondary flex items-center justify-center gap-2 hover:scale-105 transition-transform duration-300"
                             >
                                 Get Custom Package
-                            </motion.button>
+                            </button>
                         </div>
                     </div>
-                </motion.div>
+                </div>
             </div>
         </div>
     )

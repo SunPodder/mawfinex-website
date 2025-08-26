@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useCallback, memo } from "react"
-import { motion } from "framer-motion"
 import { useRouter } from "next/router"
 import {
     Smartphone,
@@ -25,39 +24,67 @@ const App = memo(({ inView }) => {
     }, [])
 
     const handleConsultationRedirect = useCallback((packageData, serviceType) => {
-        // Create URL parameters with package information
-        const params = new URLSearchParams({
-            service: serviceType === "apps" ? "Mobile App Development" : "Web Development",
-            package: packageData.name,
-            price: packageData.price,
-            consultationType: "Free Consultation",
-            packageDetails: JSON.stringify({
-                type: serviceType,
-                features: packageData.features,
-                includes: packageData.includes,
-                duration: packageData.duration
+        try {
+            if (typeof window === 'undefined') {
+                return
+            }
+
+            // Create URL parameters with package information
+            const params = new URLSearchParams({
+                service: serviceType === "apps" ? "Mobile App Development" : "Web Development",
+                package: packageData.name,
+                price: packageData.price,
+                consultationType: "Free Consultation",
+                packageDetails: JSON.stringify({
+                    type: serviceType,
+                    features: packageData.features,
+                    includes: packageData.includes,
+                    duration: packageData.duration
+                })
             })
-        })
-        
-        router.push(`/consultation?${params.toString()}`)
+            
+            const consultationUrl = `/consultation?${params.toString()}`
+            
+            if (router.push) {
+                router.push(consultationUrl)
+            } else {
+                window.location.href = consultationUrl
+            }
+        } catch (error) {
+            console.error("Error in handleConsultationRedirect:", error)
+            window.location.href = '/consultation'
+        }
     }, [router])
 
     const handleLearnMore = useCallback((toolData) => {
-        const params = new URLSearchParams({
-            service: "Custom Software Development",
-            package: toolData.title,
-            price: toolData.price,
-            consultationType: "Free Consultation",
-            packageDetails: JSON.stringify({
-                type: "custom-tool",
-                description: toolData.description
-            })
-        })
-        
-        router.push(`/consultation?${params.toString()}`)
-    }, [router])
+        try {
+            if (typeof window === 'undefined') {
+                return
+            }
 
-    // ... existing data arrays (appPackages, websitePackages, customTools) remain the same ...
+            const params = new URLSearchParams({
+                service: "Custom Software Development",
+                package: toolData.title,
+                price: toolData.price,
+                consultationType: "Free Consultation",
+                packageDetails: JSON.stringify({
+                    type: "custom-tool",
+                    description: toolData.description
+                })
+            })
+            
+            const consultationUrl = `/consultation?${params.toString()}`
+            
+            if (router.push) {
+                router.push(consultationUrl)
+            } else {
+                window.location.href = consultationUrl
+            }
+        } catch (error) {
+            console.error("Error in handleLearnMore:", error)
+            window.location.href = '/consultation'
+        }
+    }, [router])
 
     const appPackages = [
         {
@@ -272,19 +299,14 @@ const App = memo(({ inView }) => {
 
     return (
         <div className="w-full relative overflow-hidden">
-            {/* Background Elements - Mobile Fixed */}
-            <div className="absolute top-10 -right-10 w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-48 lg:h-48 bg-neon-cyan/10 rounded-full blur-xl" />
-            <div className="absolute bottom-10 -left-10 w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-48 lg:h-48 bg-neon-green/10 rounded-full blur-xl" />
+            {/* Simplified background elements - reduced blur */}
+            <div className="absolute top-10 -right-10 w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-48 lg:h-48 bg-neon-cyan/10 rounded-full" />
+            <div className="absolute bottom-10 -left-10 w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-48 lg:h-48 bg-neon-green/10 rounded-full" />
 
             <div className="w-full px-3 sm:px-4 md:px-6 lg:px-8 relative z-10">
                 <div className="max-w-7xl mx-auto py-6 sm:py-8 md:py-12 lg:py-16">
-                    {/* Section Header */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.2 }}
-                        className="text-center mb-6 sm:mb-8 md:mb-12 lg:mb-16"
-                    >
+                    {/* Section Header - no motion */}
+                    <div className="text-center mb-6 sm:mb-8 md:mb-12 lg:mb-16">
                         <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-3 sm:mb-4 md:mb-6 leading-tight">
                             Products & <span className="gradient-text">Apps</span>
                         </h2>
@@ -294,27 +316,16 @@ const App = memo(({ inView }) => {
                             we create digital products that drive engagement,
                             increase sales, and streamline operations.
                         </p>
-                    </motion.div>
+                    </div>
 
-                    {/* Custom Tools Section */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.4 }}
-                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8 md:mb-12 lg:mb-16"
-                    >
+                    {/* Custom Tools Section - simplified animations */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8 md:mb-12 lg:mb-16">
                         {customTools.map((tool, index) => {
                             const Icon = tool.icon
                             return (
-                                <motion.div
+                                <div
                                     key={`tool-${index}`}
-                                    initial={{ opacity: 0, y: 30 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{
-                                        duration: 0.6,
-                                        delay: 0.6 + index * 0.1,
-                                    }}
-                                    className="bg-white/5 backdrop-blur-sm p-3 sm:p-4 md:p-6 rounded-lg sm:rounded-xl border border-white/10 hover:border-neon-cyan/30 transition-all duration-300 group hover:transform hover:scale-105"
+                                    className="bg-white/5 backdrop-blur-sm p-3 sm:p-4 md:p-6 rounded-lg sm:rounded-xl border border-white/10 hover:border-neon-cyan/30 transition-all duration-300 group hover:scale-105"
                                 >
                                     <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 bg-neon-green/20 rounded-lg flex items-center justify-center mb-2 sm:mb-3 md:mb-4 group-hover:bg-neon-green/30 transition-colors">
                                         <Icon className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-8 lg:h-8 text-neon-green" />
@@ -329,32 +340,26 @@ const App = memo(({ inView }) => {
                                         <div className="text-xs sm:text-sm md:text-base lg:text-lg font-semibold gradient-text">
                                             {tool.price}
                                         </div>
-                                        <motion.button
+                                        <button
                                             onClick={() => handleLearnMore(tool)}
-                                            className="flex items-center gap-1 sm:gap-2 text-neon-green hover:text-neon-cyan transition-colors"
-                                            whileHover={{ x: 3 }}
+                                            className="flex items-center gap-1 sm:gap-2 text-neon-green hover:text-neon-cyan transition-colors hover:translate-x-1"
                                         >
                                             <span className="text-xs sm:text-sm">
                                                 Learn More
                                             </span>
                                             <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
-                                        </motion.button>
+                                        </button>
                                     </div>
-                                </motion.div>
+                                </div>
                             )
                         })}
-                    </motion.div>
+                    </div>
 
-                    {/* Package Tabs */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.8 }}
-                        className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-3 mb-6 sm:mb-8 md:mb-12"
-                    >
+                    {/* Package Tabs - simplified */}
+                    <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-3 mb-6 sm:mb-8 md:mb-12">
                         <button
                             onClick={() => handleTabChange("apps")}
-                            className={`flex items-center justify-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 md:px-6 md:py-3 lg:px-8 lg:py-4 rounded-lg font-semibold text-xs sm:text-sm md:text-base transition-all duration-300 ${
+                            className={`flex items-center justify-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 md:px-6 md:py-3 lg:px-8 lg:py-4 rounded-lg font-semibold text-xs sm:text-sm md:text-base transition-all duration-300 hover:scale-105 ${
                                 activeTab === "apps"
                                     ? "bg-neon-cyan/20 border-neon-cyan text-neon-cyan"
                                     : "bg-white/5 border-white/20 text-white hover:border-white/40"
@@ -365,7 +370,7 @@ const App = memo(({ inView }) => {
                         </button>
                         <button
                             onClick={() => handleTabChange("websites")}
-                            className={`flex items-center justify-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 md:px-6 md:py-3 lg:px-8 lg:py-4 rounded-lg font-semibold text-xs sm:text-sm md:text-base transition-all duration-300 ${
+                            className={`flex items-center justify-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 md:px-6 md:py-3 lg:px-8 lg:py-4 rounded-lg font-semibold text-xs sm:text-sm md:text-base transition-all duration-300 hover:scale-105 ${
                                 activeTab === "websites"
                                     ? "bg-neon-green/20 border-neon-green text-neon-green"
                                     : "bg-white/5 border-white/20 text-white hover:border-white/40"
@@ -374,23 +379,17 @@ const App = memo(({ inView }) => {
                             <Globe className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />
                             <span>Website Packages</span>
                         </button>
-                    </motion.div>
+                    </div>
 
-                    {/* Packages Grid */}
-                    <motion.div
+                    {/* Packages Grid - no complex animations */}
+                    <div
                         key={activeTab}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5 }}
                         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8 md:mb-12 lg:mb-16"
                     >
                         {currentPackages.map((pkg, index) => (
-                            <motion.div
+                            <div
                                 key={`package-${activeTab}-${index}`}
-                                initial={{ opacity: 0, y: 30 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.6, delay: index * 0.1 }}
-                                className={`relative bg-white/5 backdrop-blur-sm p-3 sm:p-4 md:p-6 rounded-lg sm:rounded-xl border transition-all duration-300 hover:transform hover:scale-105 flex flex-col h-full ${
+                                className={`relative bg-white/5 backdrop-blur-sm p-3 sm:p-4 md:p-6 rounded-lg sm:rounded-xl border transition-all duration-300 hover:scale-105 flex flex-col h-full ${
                                     pkg.popular
                                         ? "border-neon-green shadow-lg shadow-neon-green/20"
                                         : "border-white/10 hover:border-neon-cyan/30"
@@ -450,15 +449,13 @@ const App = memo(({ inView }) => {
                                     </div>
                                 </div>
 
-                                <motion.button
+                                <button
                                     onClick={() => handleConsultationRedirect(pkg, activeTab)}
-                                    className={`w-full py-2 sm:py-2.5 md:py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 mt-auto text-xs sm:text-sm md:text-base ${
+                                    className={`w-full py-2 sm:py-2.5 md:py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 mt-auto text-xs sm:text-sm md:text-base hover:scale-105 ${
                                         pkg.popular
                                             ? "bg-gradient-to-r from-neon-green to-neon-cyan text-black hover:shadow-lg hover:shadow-neon-green/30"
                                             : "bg-white/10 text-white hover:bg-neon-cyan/20 hover:text-neon-cyan border border-white/20 hover:border-neon-cyan"
                                     }`}
-                                    whileHover={{ scale: 1.02 }}
-                                    whileTap={{ scale: 0.98 }}
                                 >
                                     {activeTab === "apps" ? (
                                         <Smartphone className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -466,18 +463,13 @@ const App = memo(({ inView }) => {
                                         <Globe className="w-3 h-3 sm:w-4 sm:h-4" />
                                     )}
                                     Get Started
-                                </motion.button>
-                            </motion.div>
+                                </button>
+                            </div>
                         ))}
-                    </motion.div>
+                    </div>
 
-                    {/* Products & Apps CTA */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 1.2 }}
-                        className="text-center"
-                    >
+                    {/* Products & Apps CTA - simplified */}
+                    <div className="text-center">
                         <div className="bg-gradient-to-r from-purple-400/10 to-neon-cyan/10 backdrop-blur-sm p-4 sm:p-6 md:p-8 rounded-lg sm:rounded-xl border border-white/10">
                             <Package className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 text-neon-cyan mx-auto mb-2 sm:mb-3 md:mb-4" />
                             <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-2 sm:mb-3 md:mb-4">
@@ -493,26 +485,22 @@ const App = memo(({ inView }) => {
                                 solution.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4 justify-center">
-                                <motion.a
+                                <a
                                     href="/consultation"
-                                    className="btn-primary flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm md:text-base px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3"
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
+                                    className="btn-primary flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm md:text-base px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 hover:scale-105 transition-transform duration-300"
                                 >
                                     Discuss Your Product Idea
                                     <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" />
-                                </motion.a>
-                                <motion.a
+                                </a>
+                                <a
                                     href="/contact"
-                                    className="btn-secondary flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm md:text-base px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3"
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
+                                    className="btn-secondary flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm md:text-base px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 hover:scale-105 transition-transform duration-300"
                                 >
                                     View Portfolio
-                                </motion.a>
+                                </a>
                             </div>
                         </div>
-                    </motion.div>
+                    </div>
                 </div>
             </div>
         </div>
