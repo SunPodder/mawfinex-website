@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml"
+>
+  <url>
+    <loc>https://www.mawfinex.com/</loc>
+    <lastmod>2025-08-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.00</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mawfinex.com/"/>
+    <xhtml:link rel="alternate" hreflang="bn" href="https://www.mawfinex.com/bn/"/>
+  </url>
+
+  <url>
+    <loc>https://www.mawfinex.com/services</loc>
+    <lastmod>2025-08-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mawfinex.com/services"/>
+    <xhtml:link rel="alternate" hreflang="bn" href="https://www.mawfinex.com/bn/services"/>
+  </url>
+
+  <url>
+    <loc>https://www.mawfinex.com/careers</loc>
+    <lastmod>2025-08-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.60</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mawfinex.com/careers"/>
+    <xhtml:link rel="alternate" hreflang="bn" href="https://www.mawfinex.com/bn/careers"/>
+  </url>
+
+  <url>
+    <loc>https://www.mawfinex.com/consultation</loc>
+    <lastmod>2025-08-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mawfinex.com/consultation"/>
+    <xhtml:link rel="alternate" hreflang="bn" href="https://www.mawfinex.com/bn/consultation"/>
+  </url>
+
+  <!-- Add additional pages here as needed -->
+</urlset>

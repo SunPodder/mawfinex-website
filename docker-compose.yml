@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  traefik:
+    image: traefik:v2.10
+    command:
+      - --api.insecure=true
+      - --providers.docker=true
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --certificatesresolvers.myresolver.acme.tlschallenge=true
+      - --certificatesresolvers.myresolver.acme.email=mawfinexinnovations@gmail.com
+      - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./letsencrypt:/letsencrypt
+    restart: unless-stopped
+
+  nextjs:
+    build: ./client
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nextjs.rule=Host(`mawfinex.com`) && PathPrefix(`/`)
+        && !PathPrefix(`/api`)"
+      - "traefik.http.routers.nextjs.entrypoints=websecure"
+      - "traefik.http.routers.nextjs.tls.certresolver=myresolver"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+
+  express:
+    build: ./server
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.express.rule=Host(`mawfinex.com`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.express.entrypoints=websecure"
+      - "traefik.http.routers.express.tls.certresolver=myresolver"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
