@@ -23,12 +23,12 @@ const Home = () => {
                 <meta property="og:url" content="https://www.mawfinex.com/" />
                 <meta property="og:site_name" content="MawFiNex" />
                 <meta property="og:locale" content="en_US" />
-                <meta property="og:image" content="https://www.mawfinex.com/og-image.jpg" />
+                <meta property="og:image" content="https://www.mawfinex.com/og-image.png" />
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:site" content="@MawFiNex" />
                 <meta name="twitter:title" content="MawFiNex — Digital Transformation, Web & Mobile Apps" />
                 <meta name="twitter:description" content="Custom web & mobile development, automation, cybersecurity and growth services for businesses in Bangladesh." />
-                <meta name="twitter:image" content="https://www.mawfinex.com/og-image.jpg" />
+                <meta name="twitter:image" content="https://www.mawfinex.com/og-image.png" />
                 <meta name="theme-color" content="#00FFD1" />
 
                 {/* hreflang if multi-language available */}

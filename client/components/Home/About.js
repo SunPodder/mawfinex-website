@@ -24,22 +24,22 @@ const About = () => {
     const beforeAfter = [
         {
             title: "E-commerce Transformation",
-            before: "/api/placeholder/400/300",
-            after: "/api/placeholder/400/300",
+            before: "/before_after_1.jpeg",
+            after: "/before_after_2.jpeg",
             description:
                 "Transformed a traditional business into a modern e-commerce platform with 300% increase in sales.",
         },
         {
             title: "Brand Digital Makeover",
-            before: "/api/placeholder/400/300",
-            after: "/api/placeholder/400/300",
+            before: "/before_after_3.jpeg",
+            after: "/before_after_4.png",
             description:
                 "Complete brand redesign and digital presence overhaul resulting in 500% social media growth.",
         },
         {
             title: "Automation Implementation",
-            before: "/api/placeholder/400/300",
-            after: "/api/placeholder/400/300",
+            before: "/before_after_1.jpeg",
+            after: "/before_after_2.jpeg",
             description:
                 "Implemented business automation reducing manual work by 80% and increasing efficiency.",
         },
@@ -131,7 +131,7 @@ automated, unstoppable growth.
                             </div>
                             <p className="text-gray-300 leading-relaxed text-xs sm:text-sm lg:text-base">
                                 To engineer unstoppable digital growth by fusing AI, automation, cybersecurity, and
-strategy into one powerful ecosystem empowering businesses to scale, dominate, and thrive ithe future.
+strategy into one powerful ecosystem empowering businesses to scale, dominate, and thrive in the future.
 
                             </p>
                         </div>

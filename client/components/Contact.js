@@ -389,25 +389,67 @@ const Contact = () => {
                         Visit Our Office
                     </h3>
                     <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
-                        Located in the heart of Dhaka, we welcome clients for
-                        face-to-face meetings and consultations. Schedule an
-                        appointment to visit our modern workspace.
+                        Located in Cyprus, we welcome clients for face-to-face meetings and consultations. Click on the map below to view our exact location and get directions.
                     </p>
-                    <div className="h-64 bg-gray-800 rounded-lg flex items-center justify-center overflow-hidden">
-                        <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.012155525589!2d90.41251807507644!3d23.82234937861309!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c7e2e2b7b7e7%3A0x7b8e6e8e8e8e8e8e!2s360%20Arch.%20Makarios%20III%20Avenue%2C%20Crystal%20Business%20Tower%2C%207th%20Floor%2C%20Office%20702%2FLimassol%203030%2C%20Cyprus!5e0!3m2!1sen!2sbd!4v1718030000000!5m2!1sen!2sbd"
-                            width="100%"
-                            height="100%"
-                            style={{ border: 0 }}
-                            allowFullScreen=""
-                            loading="lazy"
-                            referrerPolicy="no-referrer-when-downgrade"
-                            title="Google Map Location"
-                        />
+                    
+                    {/* Fake Map Design */}
+                    <div 
+                        className="h-64 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg relative overflow-hidden cursor-pointer group transition-all duration-300 hover:shadow-xl hover:shadow-neon-cyan/20"
+                        onClick={() => window.open("https://maps.app.goo.gl/qW3Qt6yfGix2QQvt6", "_blank")}
+                    >
+                        {/* Grid lines to simulate map */}
+                        <div className="absolute inset-0 opacity-20">
+                            {[...Array(8)].map((_, i) => (
+                                <div key={i} className="absolute w-full h-px bg-gray-600" style={{ top: `${(i + 1) * 12.5}%` }} />
+                            ))}
+                            {[...Array(12)].map((_, i) => (
+                                <div key={i} className="absolute h-full w-px bg-gray-600" style={{ left: `${(i + 1) * 8.33}%` }} />
+                            ))}
+                        </div>
+                        
+                        {/* Fake roads */}
+                        <div className="absolute top-1/3 left-0 w-full h-1 bg-gray-400 opacity-40" />
+                        <div className="absolute top-2/3 left-0 w-full h-1 bg-gray-400 opacity-40" />
+                        <div className="absolute left-1/4 top-0 h-full w-1 bg-gray-400 opacity-40" />
+                        <div className="absolute left-3/4 top-0 h-full w-1 bg-gray-400 opacity-40" />
+                        
+                        {/* Location pin */}
+                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                            <div className="relative">
+                                <div className="w-6 h-6 bg-neon-cyan rounded-full animate-pulse" />
+                                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full" />
+                                {/* Ripple effect */}
+                                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 border-2 border-neon-cyan rounded-full animate-ping opacity-30" />
+                            </div>
+                        </div>
+                        
+                        {/* Overlay with text */}
+                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div className="text-center">
+                                <MapPin className="w-8 h-8 text-neon-cyan mx-auto mb-2" />
+                                <p className="text-white font-semibold">Click to view in Google Maps</p>
+                                <p className="text-gray-300 text-sm">360 Arch. Makarios III Avenue, Cyprus</p>
+                            </div>
+                        </div>
+                        
+                        {/* Corner elements for design */}
+                        <div className="absolute top-4 left-4 w-8 h-8 border-l-2 border-t-2 border-neon-cyan/30" />
+                        <div className="absolute top-4 right-4 w-8 h-8 border-r-2 border-t-2 border-neon-cyan/30" />
+                        <div className="absolute bottom-4 left-4 w-8 h-8 border-l-2 border-b-2 border-neon-cyan/30" />
+                        <div className="absolute bottom-4 right-4 w-8 h-8 border-r-2 border-b-2 border-neon-cyan/30" />
                     </div>
 
-
+                    <motion.button
+                        onClick={() => window.open("https://maps.app.goo.gl/qW3Qt6yfGix2QQvt6", "_blank")}
+                        className="mt-6 btn-secondary inline-flex items-center gap-2"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        <MapPin className="w-5 h-5" />
+                        Open in Google Maps
+                    </motion.button>
                 </motion.div>
+                
                 {submitStatus && (
                     <motion.div
                         initial={{ opacity: 0, y: -20 }}
