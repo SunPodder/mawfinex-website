@@ -12,7 +12,7 @@ const FloatingContact = () => {
         {
             icon: MessageSquare,
             label: "WhatsApp",
-            href: "https://wa.me/8801234567890",
+            href: "https://wa.me/8801618046884",
             color: "green-500",
             bgColor: "green-500/20",
         },
@@ -26,7 +26,7 @@ const FloatingContact = () => {
         {
             icon: Phone,
             label: "Call",
-            href: "tel:+8801234567890",
+            href: "tel:+8809638823407",
             color: "neon-cyan",
             bgColor: "neon-cyan/20",
         },

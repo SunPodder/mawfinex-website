@@ -19,7 +19,19 @@ const ConsultationPage = () => {
     const [formData, setFormData] = useState({})
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [submitStatus, setSubmitStatus] = useState(null)
+    const [validationErrors, setValidationErrors] = useState({})
     const router = useRouter()
+
+    // Phone number validation regex for Bangladesh (+880), International, and local formats
+    const phoneRegex = /^(\+8801[3-9]\d{8}|01[3-9]\d{8}|\+\d{10,15})$/
+
+    const validatePhoneNumber = (phone) => {
+        if (!phone) return "Phone number is required"
+        if (!phoneRegex.test(phone.replace(/[\s-]/g, ""))) {
+            return "Please enter a valid phone number (e.g., +8801712345678 or 01712345678)"
+        }
+        return null
+    }
 
     // Auto-fill form data from URL parameters
     useEffect(() => {
@@ -149,7 +161,7 @@ const ConsultationPage = () => {
             id: "in-person",
             label: "In-Person",
             icon: MapPin,
-            description: "Meet at our office in Dhaka",
+            description: "Meet at our office in Dubai",
         },
     ]
 
@@ -186,14 +198,73 @@ const ConsultationPage = () => {
     const handleInputChange = (field, value) => {
         console.log(`Setting ${field} to:`, value) // Debug log
         setFormData((prev) => ({ ...prev, [field]: value }))
+        
+        // Clear validation error when user starts typing
+        if (validationErrors[field]) {
+            setValidationErrors(prev => ({ ...prev, [field]: null }))
+        }
+
+        // Real-time phone validation
+        if (field === 'phone' && value) {
+            const phoneError = validatePhoneNumber(value)
+            if (phoneError) {
+                setValidationErrors(prev => ({ ...prev, phone: phoneError }))
+            }
+        }
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         setIsSubmitting(true)
 
+        // Clear previous validation errors
+        setValidationErrors({})
+
         // Validate required fields
+        const errors = {}
+        
         if (!formData.consultationType) {
+            errors.consultationType = "Please select a consultation type"
+        }
+        
+        if (!formData.name?.trim()) {
+            errors.name = "Name is required"
+        }
+        
+        if (!formData.email?.trim()) {
+            errors.email = "Email is required"
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+            errors.email = "Please enter a valid email address"
+        }
+        
+        // Phone validation
+        const phoneError = validatePhoneNumber(formData.phone)
+        if (phoneError) {
+            errors.phone = phoneError
+        }
+        
+        if (!formData.service) {
+            errors.service = "Please select a service"
+        }
+        
+        if (!formData.date) {
+            errors.date = "Please select a date"
+        }
+        
+        if (!formData.time) {
+            errors.time = "Please select a time"
+        }
+        
+        if (!formData.meetingType) {
+            errors.meetingType = "Please select a meeting type"
+        }
+        
+        if (!formData.details?.trim()) {
+            errors.details = "Please provide project details"
+        }
+
+        if (Object.keys(errors).length > 0) {
+            setValidationErrors(errors)
             setSubmitStatus("error")
             setIsSubmitting(false)
             return
@@ -209,15 +280,15 @@ const ConsultationPage = () => {
                 },
                 body: JSON.stringify({
                     consultationType: formData.consultationType,
-                    name: formData.name,
-                    email: formData.email,
-                    phone: formData.phone,
-                    company: formData.company,
+                    name: formData.name.trim(),
+                    email: formData.email.trim(),
+                    phone: formData.phone.replace(/[\s-]/g, ""), // Remove spaces and dashes
+                    company: formData.company?.trim(),
                     service: formData.service,
                     date: formData.date,
                     time: formData.time,
                     meetingType: formData.meetingType,
-                    details: formData.details
+                    details: formData.details.trim()
                 }),
             })
             
@@ -226,6 +297,7 @@ const ConsultationPage = () => {
             if (res.ok) {
                 setSubmitStatus("success")
                 setFormData({})
+                setValidationErrors({})
                 // Clear URL parameters after successful submission
                 router.replace('/consultation', undefined, { shallow: true })
             } else {
@@ -316,6 +388,8 @@ const ConsultationPage = () => {
                                         formData.consultationType === type.title
                                             ? "bg-neon-cyan/20 border-neon-cyan"
                                             : "bg-white/5 border-white/10 hover:border-white/30"
+                                    } ${
+                                        validationErrors.consultationType ? "border-red-500/50" : ""
                                     }`}
                                 >
                                     {type.popular && (
@@ -346,6 +420,12 @@ const ConsultationPage = () => {
                             )
                         })}
                     </motion.div>
+                    
+                    {validationErrors.consultationType && (
+                        <p className="text-red-400 text-sm mb-4 text-center">
+                            {validationErrors.consultationType}
+                        </p>
+                    )}
 
                     {/* Booking Form */}
                     <motion.form
@@ -373,9 +453,14 @@ const ConsultationPage = () => {
                                             e.target.value,
                                         )
                                     }
-                                    className="form-input w-full"
+                                    className={`form-input w-full ${validationErrors.name ? "border-red-500/50" : ""}`}
                                     required
                                 />
+                                {validationErrors.name && (
+                                    <p className="text-red-400 text-sm mt-1">
+                                        {validationErrors.name}
+                                    </p>
+                                )}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium mb-2">
@@ -390,9 +475,14 @@ const ConsultationPage = () => {
                                             e.target.value,
                                         )
                                     }
-                                    className="form-input w-full"
+                                    className={`form-input w-full ${validationErrors.email ? "border-red-500/50" : ""}`}
                                     required
                                 />
+                                {validationErrors.email && (
+                                    <p className="text-red-400 text-sm mt-1">
+                                        {validationErrors.email}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -410,9 +500,18 @@ const ConsultationPage = () => {
                                             e.target.value,
                                         )
                                     }
-                                    className="form-input w-full"
+                                    className={`form-input w-full ${validationErrors.phone ? "border-red-500/50" : ""}`}
+                                    placeholder="+8801712345678 or 01712345678"
                                     required
                                 />
+                                {validationErrors.phone && (
+                                    <p className="text-red-400 text-sm mt-1">
+                                        {validationErrors.phone}
+                                    </p>
+                                )}
+                                <p className="text-gray-400 text-xs mt-1">
+                                    Enter Bangladesh mobile (+8801XXXXXXXXX) or international format
+                                </p>
                             </div>
                             <div>
                                 <label className="block text-sm font-medium mb-2">
@@ -456,6 +555,11 @@ const ConsultationPage = () => {
                                     </button>
                                 ))}
                             </div>
+                            {validationErrors.service && (
+                                <p className="text-red-400 text-sm mt-2">
+                                    {validationErrors.service}
+                                </p>
+                            )}
                             {/* Debug display */}
                             {formData.service && (
                                 <p className="text-xs text-neon-green mt-2">
@@ -478,10 +582,15 @@ const ConsultationPage = () => {
                                             e.target.value,
                                         )
                                     }
-                                    className="form-input w-full"
+                                    className={`form-input w-full ${validationErrors.date ? "border-red-500/50" : ""}`}
                                     min={new Date().toISOString().split("T")[0]}
                                     required
                                 />
+                                {validationErrors.date && (
+                                    <p className="text-red-400 text-sm mt-1">
+                                        {validationErrors.date}
+                                    </p>
+                                )}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium mb-2">
@@ -495,7 +604,7 @@ const ConsultationPage = () => {
                                             e.target.value,
                                         )
                                     }
-                                    className="form-input w-full"
+                                    className={`form-input w-full ${validationErrors.time ? "border-red-500/50" : ""}`}
                                     required
                                 >
                                     <option value="">Select time</option>
@@ -505,6 +614,11 @@ const ConsultationPage = () => {
                                         </option>
                                     ))}
                                 </select>
+                                {validationErrors.time && (
+                                    <p className="text-red-400 text-sm mt-1">
+                                        {validationErrors.time}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -529,6 +643,8 @@ const ConsultationPage = () => {
                                                 formData.meetingType === type.id
                                                     ? "bg-neon-green/20 border-neon-green text-neon-green"
                                                     : "bg-white/5 border-white/20 hover:border-white/40"
+                                            } ${
+                                                validationErrors.meetingType ? "border-red-500/50" : ""
                                             }`}
                                         >
                                             <Icon className="w-6 h-6 mb-2" />
@@ -542,6 +658,11 @@ const ConsultationPage = () => {
                                     )
                                 })}
                             </div>
+                            {validationErrors.meetingType && (
+                                <p className="text-red-400 text-sm mt-2">
+                                    {validationErrors.meetingType}
+                                </p>
+                            )}
                         </div>
 
                         <div className="mb-8">
@@ -553,10 +674,15 @@ const ConsultationPage = () => {
                                 onChange={(e) =>
                                     handleInputChange("details", e.target.value)
                                 }
-                                className="form-input w-full h-32 resize-none"
+                                className={`form-input w-full h-32 resize-none ${validationErrors.details ? "border-red-500/50" : ""}`}
                                 placeholder="Please describe your project, goals, timeline, and any specific requirements..."
                                 required
                             />
+                            {validationErrors.details && (
+                                <p className="text-red-400 text-sm mt-1">
+                                    {validationErrors.details}
+                                </p>
+                            )}
                         </div>
 
                         <motion.button
@@ -599,7 +725,7 @@ const ConsultationPage = () => {
                             <span className="font-medium">
                                 {submitStatus === "success"
                                     ? "Consultation booked successfully! We'll send you a confirmation email shortly."
-                                    : "Something went wrong. Please try again."}
+                                    : "Please check the form for errors and try again."}
                             </span>
                         </div>
                     </motion.div>

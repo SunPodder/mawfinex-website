@@ -21,6 +21,18 @@ const CareersPage = () => {
     const [formData, setFormData] = useState({})
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [submitStatus, setSubmitStatus] = useState(null)
+    const [validationErrors, setValidationErrors] = useState({})
+
+    // Phone number validation regex for Bangladesh (+880), International, and local formats
+    const phoneRegex = /^(\+8801[3-9]\d{8}|01[3-9]\d{8}|\+\d{10,15})$/
+
+    const validatePhoneNumber = (phone) => {
+        if (!phone) return "Phone number is required"
+        if (!phoneRegex.test(phone.replace(/[\s-]/g, ""))) {
+            return "Please enter a valid phone number (e.g., +8801712345678 or 01712345678)"
+        }
+        return null
+    }
 
     const applicationTypes = [
         {
@@ -73,35 +85,118 @@ const CareersPage = () => {
 
     const handleInputChange = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }))
+        
+        // Clear validation error when user starts typing
+        if (validationErrors[field]) {
+            setValidationErrors(prev => ({ ...prev, [field]: null }))
+        }
+
+        // Real-time phone validation
+        if (field === 'phone' && value) {
+            const phoneError = validatePhoneNumber(value)
+            if (phoneError) {
+                setValidationErrors(prev => ({ ...prev, phone: phoneError }))
+            }
+        }
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         setIsSubmitting(true)
 
+        // Clear previous validation errors
+        setValidationErrors({})
+
+        // Validate required fields
+        const errors = {}
+
+        if (!formData.applicationType) {
+            errors.applicationType = "Please select an application type"
+        }
+
+        if (!formData.fullName?.trim()) {
+            errors.fullName = "Full name is required"
+        } else if (formData.fullName.trim().length < 2) {
+            errors.fullName = "Full name must be at least 2 characters"
+        }
+
+        if (!formData.email?.trim()) {
+            errors.email = "Email is required"
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+            errors.email = "Please enter a valid email address"
+        }
+
+        // Phone validation
+        const phoneError = validatePhoneNumber(formData.phone)
+        if (phoneError) {
+            errors.phone = phoneError
+        }
+
+        if (!formData.location?.trim()) {
+            errors.location = "Location is required"
+        } else if (formData.location.trim().length < 2) {
+            errors.location = "Location must be at least 2 characters"
+        }
+
+        if (!formData.position?.trim()) {
+            errors.position = "Position/Area of Interest is required"
+        } else if (formData.position.trim().length < 2) {
+            errors.position = "Position must be at least 2 characters"
+        }
+
+        if (!formData.message?.trim()) {
+            errors.message = "Cover letter/message is required"
+        } else if (formData.message.trim().length < 10) {
+            errors.message = "Message must be at least 10 characters"
+        }
+
+        if (!formData.file) {
+            errors.file = "Resume/Portfolio is required"
+        }
+
+        if (Object.keys(errors).length > 0) {
+            setValidationErrors(errors)
+            setSubmitStatus("error")
+            setIsSubmitting(false)
+            return
+        }
+
         // Prepare FormData for multipart/form-data
         const fd = new FormData()
-        Object.entries(formData).forEach(([key, value]) => {
-            if (key === "file" && value instanceof File) {
-                fd.append(key, value)
-            } else {
-                fd.append(key, value)
-            }
-        })
+        
+        // Add all required fields to FormData
+        fd.append('applicationType', formData.applicationType)
+        fd.append('fullName', formData.fullName.trim())
+        fd.append('email', formData.email.trim())
+        fd.append('phone', formData.phone.replace(/[\s-]/g, "")) // Remove spaces and dashes
+        fd.append('location', formData.location.trim())
+        fd.append('position', formData.position.trim())
+        fd.append('message', formData.message.trim())
+        fd.append('experience', formData.experience || '')
+        
+        // Add file
+        if (formData.file instanceof File) {
+            fd.append('file', formData.file)
+        }
 
         try {
             const res = await fetch("/api/careers", {
                 method: "POST",
                 body: fd,
-                applicationType: formData.applicationType,
             })
+
+            const data = await res.json()
+            
             if (res.ok) {
                 setSubmitStatus("success")
-                // setFormData({})
+                setFormData({})
+                setValidationErrors({})
             } else {
+                console.error('API Error:', data.error)
                 setSubmitStatus("error")
             }
         } catch (error) {
+            console.error('Network Error:', error)
             setSubmitStatus("error")
         } finally {
             setIsSubmitting(false)
@@ -197,6 +292,8 @@ const CareersPage = () => {
                                             formData.applicationType === type.id
                                                 ? `bg-${type.color}/20 border-${type.color}`
                                                 : "bg-white/5 border-white/10 hover:border-white/30"
+                                        } ${
+                                            validationErrors.applicationType ? "border-red-500/50" : ""
                                         }`}
                                     >
                                         <Icon
@@ -217,6 +314,11 @@ const CareersPage = () => {
                                 )
                             })}
                         </div>
+                        {validationErrors.applicationType && (
+                            <p className="text-red-400 text-sm mb-4 text-center">
+                                {validationErrors.applicationType}
+                            </p>
+                        )}
                     </motion.div>
 
                     {/* Application Form */}
@@ -245,9 +347,14 @@ const CareersPage = () => {
                                             e.target.value,
                                         )
                                     }
-                                    className="form-input w-full"
+                                    className={`form-input w-full ${validationErrors.fullName ? "border-red-500/50" : ""}`}
                                     required
                                 />
+                                {validationErrors.fullName && (
+                                    <p className="text-red-400 text-sm mt-1">
+                                        {validationErrors.fullName}
+                                    </p>
+                                )}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium mb-2">
@@ -262,9 +369,14 @@ const CareersPage = () => {
                                             e.target.value,
                                         )
                                     }
-                                    className="form-input w-full"
+                                    className={`form-input w-full ${validationErrors.email ? "border-red-500/50" : ""}`}
                                     required
                                 />
+                                {validationErrors.email && (
+                                    <p className="text-red-400 text-sm mt-1">
+                                        {validationErrors.email}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -282,9 +394,18 @@ const CareersPage = () => {
                                             e.target.value,
                                         )
                                     }
-                                    className="form-input w-full"
+                                    className={`form-input w-full ${validationErrors.phone ? "border-red-500/50" : ""}`}
+                                    placeholder="+8801712345678 or 01712345678"
                                     required
                                 />
+                                {validationErrors.phone && (
+                                    <p className="text-red-400 text-sm mt-1">
+                                        {validationErrors.phone}
+                                    </p>
+                                )}
+                                <p className="text-gray-400 text-xs mt-1">
+                                    Enter Bangladesh mobile (+8801XXXXXXXXX) or international format
+                                </p>
                             </div>
                             <div>
                                 <label className="block text-sm font-medium mb-2">
@@ -299,10 +420,15 @@ const CareersPage = () => {
                                             e.target.value,
                                         )
                                     }
-                                    className="form-input w-full"
+                                    className={`form-input w-full ${validationErrors.location ? "border-red-500/50" : ""}`}
                                     placeholder="City, Country"
                                     required
                                 />
+                                {validationErrors.location && (
+                                    <p className="text-red-400 text-sm mt-1">
+                                        {validationErrors.location}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -319,10 +445,15 @@ const CareersPage = () => {
                                         e.target.value,
                                     )
                                 }
-                                className="form-input w-full"
+                                className={`form-input w-full ${validationErrors.position ? "border-red-500/50" : ""}`}
                                 placeholder="e.g., Frontend Developer, Digital Marketing, UI/UX Designer"
                                 required
                             />
+                            {validationErrors.position && (
+                                <p className="text-red-400 text-sm mt-1">
+                                    {validationErrors.position}
+                                </p>
+                            )}
                         </div>
 
                         <div className="mb-6">
@@ -334,10 +465,15 @@ const CareersPage = () => {
                                 onChange={(e) =>
                                     handleInputChange("message", e.target.value)
                                 }
-                                className="form-input w-full h-32 resize-none"
+                                className={`form-input w-full h-32 resize-none ${validationErrors.message ? "border-red-500/50" : ""}`}
                                 placeholder="Tell us about yourself, your experience, and why you want to join MawFiNex..."
                                 required
                             />
+                            {validationErrors.message && (
+                                <p className="text-red-400 text-sm mt-1">
+                                    {validationErrors.message}
+                                </p>
+                            )}
                         </div>
 
                         <div className="mb-6">
@@ -378,10 +514,15 @@ const CareersPage = () => {
                                 onChange={(e) =>
                                     handleInputChange("file", e.target.files[0])
                                 }
-                                className="form-input w-full"
+                                className={`form-input w-full ${validationErrors.file ? "border-red-500/50" : ""}`}
                                 accept=".pdf,.doc,.docx"
                                 required
                             />
+                            {validationErrors.file && (
+                                <p className="text-red-400 text-sm mt-1">
+                                    {validationErrors.file}
+                                </p>
+                            )}
                             <p className="text-sm text-gray-400 mt-1">
                                 Upload your resume, portfolio, or relevant
                                 documents (PDF, DOC)
@@ -428,7 +569,7 @@ const CareersPage = () => {
                             <span className="font-medium">
                                 {submitStatus === "success"
                                     ? "Application submitted successfully! We'll review it and get back to you soon."
-                                    : "Something went wrong. Please try again."}
+                                    : "Please check the form for errors and try again."}
                             </span>
                         </div>
                     </motion.div>

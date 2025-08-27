@@ -31,7 +31,7 @@ const About = () => {
         },
         {
             title: "Brand Digital Makeover",
-            before: "/before_after_3.jpeg",
+            before: "/before_after_3.png",
             after: "/before_after_4.png",
             description:
                 "Complete brand redesign and digital presence overhaul resulting in 500% social media growth.",
